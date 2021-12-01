@@ -16,4 +16,4 @@ sumWindow n x =  if (length xs) >= n
   then (sum $ take n x) : sumWindow n (drop 1 x)
   else []
 
-isIncrementing x = zipWith (<) x (drop 1 x
+isIncrementing x = zipWith (<) x (drop 1 x)
