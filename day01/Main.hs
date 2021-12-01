@@ -4,7 +4,8 @@ import AOC
 
 main = do {
 x <- getInputInts "data.txt";
-print $ [solution1 x, solution2 x]}
+print $ [solution1 x, solution2 x];
+}
 
 -- pure stuff
 solution1 = countIncrements
