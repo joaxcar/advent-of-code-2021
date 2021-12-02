@@ -3,7 +3,7 @@ import Text.Parsec
 import Text.Parsec.String (Parser)
 
 main = do
-  input <- readFile "test/test.txt"
+  input <- readFile "data.txt"
   let prog = getRight $ parse cmds "" input
   let res1 = solution $ S.evalState (moveShip prog) (ShipState rules1 (Ship (0, 0) 0))
   let res2 = solution $ S.evalState (moveShip prog) (ShipState rules2 (Ship (0, 0) 0))
