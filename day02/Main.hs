@@ -36,10 +36,11 @@ moveShip [] = do
   return pos
 moveShip (cmd : rest) = do
   ShipState rules ship <- S.get
-  case op cmd of
-    Down -> S.put $ ShipState rules $ (down rules) ship cmd
-    Up -> S.put $ ShipState rules $ (up rules) ship cmd
-    Forward -> S.put $ ShipState rules $ (forward rules) ship cmd
+  let newShip = case op cmd of
+                Down ->  (down rules) ship cmd
+                Up -> (up rules) ship cmd
+                Forward -> (forward rules) ship cmd
+  S.put $ ShipState rules newShip
   moveShip rest
 
 -- parser
