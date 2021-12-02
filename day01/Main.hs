@@ -13,7 +13,7 @@ solution2 x = countIncrements $ sumWindow 3 x
 
 countIncrements x = sum $ map bool2int $ isIncrementing x
 
-sumWindow n x =  if (length xs) >= n
+sumWindow n x =  if (length x) >= n
   then (sum $ take n x) : sumWindow n (drop 1 x)
   else []
 
