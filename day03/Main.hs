@@ -18,8 +18,8 @@ ogr = bitCriteria gamma
 -- CO2 scrubber rating
 csr = bitCriteria epsilon
 
-mostCommonBit x =  if tresh x <= sum x then 1 else 0
-  where tresh x = case (length x) `rem` 2 of
+mostCommonBit x =  if thresh x <= sum x then 1 else 0
+  where thresh x = case (length x) `rem` 2 of
                   1 -> ((length x) `div` 2) + 1
                   0 -> (length x) `div` 2
 leastCommonBit = flipBit <$> mostCommonBit
