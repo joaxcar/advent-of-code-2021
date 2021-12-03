@@ -8,8 +8,8 @@ main = do
 
 solve1 x = solver gamma epsilon x
 solve2 x = solver ogr csr x
-
 solver f1 f2 x =foldl (*) 1 $ map bin2num [f1 x, f2 x] 
+
 gamma = (map mostCommonBit) . transpose
 epsilon = (map leastCommonBit) . transpose
 
@@ -18,6 +18,7 @@ ogr = bitCriteria gamma
 -- CO2 scrubber rating
 csr = bitCriteria epsilon
 
+-- Thresh är för tråkig. fixa!
 mostCommonBit x =  if tresh x <= sum x then 1 else 0
   where tresh x = case (length x) `rem` 2 of
                   1 -> ((length x) `div` 2) + 1
@@ -32,6 +33,8 @@ bitCriteria' func n x = bitCriteria' func (inc n) (filterByCrit x)
     filterByCrit x = filter (\y -> activeBit y == target x) x
     target x = activeBit $ func x
     activeBit x = head $ drop n x
+
+-- Helper functions, move to AOC
 
 bin2num x = bin2num' 1 0 $ reverse x
 bin2num' _ a [] = a
