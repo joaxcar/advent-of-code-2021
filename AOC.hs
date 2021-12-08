@@ -1,4 +1,8 @@
-module AOC where
+module AOC(module Prelude, module AOC, module Text.Parsec, module Text.Parsec.String , module Data.List) where
+
+import Data.List
+import Text.Parsec hiding (uncons)
+import Text.Parsec.String (Parser)
 
 getInputRaw path = readFile path
 getInputLines path = lines <$> getInputRaw path
@@ -28,3 +32,8 @@ flipBit x = case x of
 -- Parse int from char
 char2int :: Char -> Int
 char2int x = read [x]
+
+
+
+getRight (Right a) = a
+getRight (Left _) = []
