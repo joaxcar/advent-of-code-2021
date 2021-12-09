@@ -30,6 +30,18 @@ neighbours (x, y) = let left = ((x - 1), y)
 
 
 -- First part
+-- First part
+index v (x, y) = do 
+    xdir <- v V.!? x
+    val <- xdir V.!? y
+    return val 
+    
+getAt v p = 
+  case index v p of
+      Just a -> a
+      _ ->  9
+      
+{- Bad non monadic version
 getAt v (x, y) = 
   let xdir = v V.!? x
       value = case xdir of
@@ -38,6 +50,7 @@ getAt v (x, y) =
   in case value of
     Just a -> a
     _ -> 9
+-}
 
 -- Second part
 basin m v (x, y) = let close = filter (\x -> (getAt v x) < 9) $ neighbours (x, y)
