@@ -3,7 +3,7 @@ import AOC
 
 main = do
   input <- getInputLines "test.txt"
-  let res1 =  sum . scoreFails $ map (valid []) $ f input
+  let res1 =  sum . scoreFails $ map (validate []) $ f input
   let res2 = winner $ sort $ scoreIncomplete $ map (validate []) $ f input
   print (res1, res2)
 
@@ -27,8 +27,8 @@ mapper x = case x of
 
 validate [] [] = Success
 validate l [] = Incomplete l
-validate l (Open x : xs) = valid (x:l) xs 
-validate (t:ts) (Close x : xs) = if t == x then valid ts xs else Fail x
+validate l (Open x : xs) = validate (x:l) xs 
+validate (t:ts) (Close x : xs) = if t == x then validate ts xs else Fail x
 
 scoreFails l = map (scoreFail . sym) $ filter isFail l
   where
