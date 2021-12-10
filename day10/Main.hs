@@ -4,7 +4,7 @@ import AOC
 main = do
   input <- getInputLines "test.txt"
   let res1 =  sum . scoreFails $ map (valid []) $ f input
-  let res2 = winner $ sort $ scoreIncomplete $ map (valid []) $ f input
+  let res2 = winner $ sort $ scoreIncomplete $ map (validate []) $ f input
   print (res1, res2)
 
 f = map2 mapper
@@ -24,6 +24,11 @@ mapper x = case x of
   ']' -> Close Two
   '}' -> Close Three
   '>' -> Close Four
+
+validate [] [] = Success
+validate l [] = Incomplete l
+validate l (Open x : xs) = valid (x:l) xs 
+validate (t:ts) (Close x : xs) = if t == x then valid ts xs else Fail x
 
 scoreFails l = map (scoreFail . sym) $ filter isFail l
   where
@@ -49,8 +54,3 @@ scoreIncomplete l = map scoreIt $ filter isIncomplete l
                  Four -> 4
 
 winner l = head $ drop (div (length l) 2) l 
-
-valid [] [] = Success
-valid l [] = Incomplete l
-valid l (Open x : xs) = valid (x:l) xs 
-valid (t:ts) (Close x : xs) = if t == x then valid ts xs else Fail x
