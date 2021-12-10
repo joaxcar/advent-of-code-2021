@@ -14,6 +14,7 @@ map2 = fmap . fmap
 data Symbol = One | Two | Three | Four deriving (Show, Eq)
 data Action = Open Symbol | Close Symbol deriving (Show)
 data Outcome =  Success | Incomplete [Symbol] | Fail { sym :: Symbol }
+type Stack = [Symbol]
 
 mapper :: Char -> Action
 mapper x = case x of
@@ -26,7 +27,7 @@ mapper x = case x of
   '}' -> Close Three
   '>' -> Close Four
 
-validate :: [Symbol] -> [Action] -> Outcome
+validate :: Stack -> [Action] -> Outcome
 validate [] [] = Success
 validate l [] = Incomplete l
 validate l (Open x : xs) = validate (x:l) xs 
