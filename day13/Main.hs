@@ -8,7 +8,7 @@ import AOC
 main = do
   input <- getInputRaw "data.txt"
   let prog = gr $ parse cmds "" input
-  print $ M.toList $ f prog
+  mapM_ putStrLn $ id . plot $ M.toList $ f prog
 
 gr (Right a) = a
 gr (Left _) = (M.empty, [])
@@ -17,15 +17,12 @@ f d =
   let folds =  snd d
       grids = fst d
   in foldl fld grids folds
-plot l =
-  let allp = [(x,y) | x <- [0..38], y<-[0..5]]
-      map = M.toList $ M.union (M.fromList l) (M.fromList allp)
-      sort 
+
 fld g ('y', n) =
   let flips = M.filterWithKey (\(x, y) _ -> y > n) g
       noFlip = M.filterWithKey (\(x, y) _ -> y < n) g
       flopp = M.mapKeys hori flips
-      hori (x, y) = (x, n - (y - n))
+      hori (x, y) = (x, mod (y-n) n)
   in M.union noFlip flopp
   
 fld g ('x', n) = 
@@ -34,6 +31,15 @@ fld g ('x', n) =
       flopp = M.mapKeys hori flips
       hori (x, y) = (n - (x - n), y)
   in M.union noFlip flopp
+
+plot l =
+  let allp = [((x,y), 0) | x <- [0..38], y<-[0..5]]
+      maps = M.toList $ M.union (M.fromList l) (M.fromList allp)
+      ss = groupBy (\x y -> (fst . fst $ x)== (fst . fst $ y)) maps
+  in (map . map) points ss
+
+points (x, 0) = '.'
+points (x, 1) = '#'
 -- parser
 dot = do
   x <- num
