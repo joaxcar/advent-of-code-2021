@@ -45,61 +45,31 @@ packet = try litteral
 litteral = do
   ver <- pure binStr2num <*> nib
   pid <- pure binStr2num <*> string "100"
-  num <- number
+  num <- litOne <|> litTwo
   return (L ver pid (binStr2num num))
+litOne = do
+  i <- char '0'
+  part <- byte
+  return part
+litTwo = do
+  i <- char '1'
+  part <- byte
+  rest <- number
+  return (part ++ rest)
   
-number = do
-  i <- bit
-  case i of
-    '0' -> do
-      part <- byte
-      return part
-    '1' -> do
-      part <- byte
-      rest <- number
-      return (part ++ rest)
+summer = mather "000" sumV
+multer = mather "001" prodV
+minner = mather "010" minV
+maxer = mather "011" maxV
+greater = mather "101" gtV
+lesser = mather "110" ltV
+equeller = mather "111" eqV
 
-summer = do
+mather pid f = do
   ver <- pure binStr2num <*> nib
-  pid <- pure binStr2num <*> string "000"
+  pid <- pure binStr2num <*> string pid
   packets <- typeOnePack <|> typeTwoPack
-  return (L ver pid (sumV packets))
-
-multer = do
-  ver <- pure binStr2num <*> nib
-  pid <- pure binStr2num <*> string "001"
-  packets <- typeOnePack <|> typeTwoPack
-  return (L ver pid (prodV packets))
-
-minner = do
-  ver <- pure binStr2num <*> nib
-  pid <- pure binStr2num <*> string "010"
-  packets <- typeOnePack <|> typeTwoPack
-  return (L ver pid (minV packets))
-
-maxer = do
-  ver <- pure binStr2num <*> nib
-  pid <- pure binStr2num <*> string "011"
-  packets <- typeOnePack <|> typeTwoPack
-  return (L ver pid (maxV packets))
-
-greater = do
-  ver <- pure binStr2num <*> nib
-  pid <- pure binStr2num <*> string "101"
-  packets <- typeOnePack <|> typeTwoPack
-  return (L ver pid (gtV packets))
-
-lesser = do
-  ver <- pure binStr2num <*> nib
-  pid <- pure binStr2num <*> string "110"
-  packets <- typeOnePack <|> typeTwoPack
-  return (L ver pid (ltV packets))
-
-equeller = do
-  ver <- pure binStr2num <*> nib
-  pid <- pure binStr2num <*> string "111"
-  packets <- typeOnePack <|> typeTwoPack
-  return (L ver pid (eqV packets))
+  return (L ver pid (f packets))
 
 typeOnePack = do
   char '0'
