@@ -22,14 +22,14 @@ eval (L _ _ v) = v
 eval (O _ _ s f) = f (map eval s)
 
 -- parser
-packet = try litteral <|> operator
+packet = try literal <|> operator
   
 num = read :: String -> Int
 bit = oneOf "01"
 nib = count 3 bit
 byte = count 4 bit
 
-litteral = do
+literal = do
   ver <- pure binStr2num <*> nib
   pid <- pure binStr2num <*> string "100"
   parts <- many (char '1' *> byte)
