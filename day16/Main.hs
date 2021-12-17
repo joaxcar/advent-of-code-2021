@@ -11,6 +11,8 @@ main = do
 getRight2 (Left _) = NotP
 getRight2 (Right a) = a
 
+data Packet = L {ver :: Int, pid :: Int, val :: Int} | O {ver :: Int, pid :: Int, sub :: [Packet], op :: [Int] -> Int} | NotP 
+
 -- part 1 math
 sumver (O v _ s _) = v + (sum $ map sumver $ s)  
 sumver (L v _ _ ) = v
@@ -18,8 +20,6 @@ sumver (L v _ _ ) = v
 -- part 2
 eval (L _ _ v) = v
 eval (O _ _ s f) = f (map eval s)
-
-data Packet = L {ver :: Int, pid :: Int, val :: Int} | O {ver :: Int, pid :: Int, sub :: [Packet], op :: [Int] -> Int} | NotP 
 
 -- parser
 num = read :: String -> Int
