@@ -7,7 +7,7 @@ import AOC
 
 main = do
   input <- getInputRaw "data.txt"
-  let test = concatMap toBin input
+  let test = concatMap hex2bin input
   let prog = getRight2 $ parse packet "" test
   print $ (sumver prog, eval prog)
 
@@ -64,7 +64,7 @@ typeTwoPack = do
   packets <- count packs packet
   return packets
 
-toBin c = case c of
+hex2bin c = case c of
    '0' -> "0000"
    '1' -> "0001"
    '2' -> "0010"
