@@ -1,7 +1,4 @@
 module Main where
-import Data.List
-import qualified Data.Map as M
-import Data.Map (Map)
 
 import AOC 
 
