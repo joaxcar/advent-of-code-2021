@@ -22,11 +22,6 @@ eval (L _ _ v) = v
 eval (O _ _ s f) = f (map eval s)
 
 -- parser
-num = read :: String -> Int
-bit = oneOf "01"
-nib = count 3 bit
-byte = count 4 bit
-
 packet = try litteral <|> operator
 
 litteral = do
@@ -60,3 +55,8 @@ typeTwoPack = do
   packs <- pure binStr2num <*> count 11 bit
   packets <- count packs packet
   return packets
+  
+num = read :: String -> Int
+bit = oneOf "01"
+nib = count 3 bit
+byte = count 4 bit
