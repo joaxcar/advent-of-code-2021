@@ -3,29 +3,23 @@ import Data.List
 import qualified Data.Map as M
 import Data.Map (Map)
 
-import AOC
-
-data Packet = L {ver :: Int, pid :: Int, val :: Int} | O {ver :: Int, pid :: Int, op :: String, sub :: [Packet]} | NotP deriving (Show)
+import AOC 
 
 main = do
   input <- getInputRaw "data.txt"
   let test = concatMap toBin input
-  let prog = parse packet "" test
-  print prog
+  let prog = getRight2 $ parse packet "" test
+  print $ (sumver prog, eval prog)
 
 -- part 1 math
 sumver (O v _ _ s) = v + (sum $ map sumver $ s)  
 sumver (L v _ _ ) = v
--- part2 math
-sumV [] = 0
-sumV (x:xs) = val x + sumV xs
-prodV [] = 1
-prodV (x:xs) = val x * prodV xs
-maxV p = head . reverse . sort $ map val p
-minV p = head . sort $ map val p
-gtV (v1:v2:[]) = if val v1 > val v2 then 1 else 0
-ltV (v1:v2:[]) = if val v1 < val v2 then 1 else 0
-eqV (v1:v2:[]) = if val v1 == val v2 then 1 else 0
+
+-- part 2
+eval (L _ _ v) = v
+eval (O _ _ f s) = f (map eval s)
+
+data Packet = L {ver :: Int, pid :: Int, val :: Int} | O {ver :: Int, pid :: Int, op :: [Int] -> Int, sub :: [Packet]} | NotP 
 
 -- parser
 num = read :: String -> Int
@@ -45,31 +39,23 @@ packet = try litteral
 litteral = do
   ver <- pure binStr2num <*> nib
   pid <- pure binStr2num <*> string "100"
-  num <- litOne <|> litTwo
-  return (L ver pid (binStr2num num))
-litOne = do
-  i <- char '0'
-  part <- byte
-  return part
-litTwo = do
-  i <- char '1'
-  part <- byte
-  rest <- number
-  return (part ++ rest)
+  parts <- many (char '1' *> byte)
+  end <- (char '0' *> byte)
+  return (L ver pid (binStr2num ((concat parts) ++ end)))
   
-summer = mather "000" sumV
-multer = mather "001" prodV
-minner = mather "010" minV
-maxer = mather "011" maxV
-greater = mather "101" gtV
-lesser = mather "110" ltV
-equeller = mather "111" eqV
+summer = operator "000" (foldr (+) 0)
+multer = operator "001" (foldr (*) 1)
+minner = operator "010" (head . sort)
+maxer = operator "011" (head . reverse . sort)
+greater = operator "101" (\ (v1:v2:[]) -> if v1 > v2 then 1 else 0)
+lesser = operator "110" (\ (v1:v2:[]) -> if v1 < v2 then 1 else 0)
+equeller = operator "111" (\ (v1:v2:[]) -> if v1 == v2 then 1 else 0)
 
-mather pid f = do
+operator pid f = do
   ver <- pure binStr2num <*> nib
   pid <- pure binStr2num <*> string pid
   packets <- typeOnePack <|> typeTwoPack
-  return (L ver pid (f packets))
+  return (O ver pid f packets)
 
 typeOnePack = do
   char '0'
